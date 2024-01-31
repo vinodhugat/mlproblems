@@ -1,0 +1,44 @@
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#load the dataset
+df = pd.read_csv("PlayTennis.csv")
+
+#use LabelEncoder to convert categorial variables to numerical
+le = LabelEncoder()
+for column in df.columns:
+    df[column] = le.fit_transform(df[column])
+
+#seperate features (X) and target variable (Y)
+X = df[['Outlook','Temperature','Humidity','Wind']]
+Y = df['PlayTennis']
+
+#invert label encoding for 'PlayTennis' column
+class_names = list(le.classes_)
+Y = le.inverse_transform(Y)
+
+#Split the dataset into training and tesing sets
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
+
+# Create a Decision Tree Classifier with entropy as the criterion
+clf_entropy = DecisionTreeClassifier(criterion='entropy')
+
+#Train the Decision Tree Model
+dtree = clf_entropy.fit(X_train, Y_train)
+feature_names = X.columns.tolist()
+
+# Plot the Decision Tree
+plt.figure(figsize=(12, 8))
+plot_tree(dtree, filled=True, feature_names=feature_names, class_names=class_names, rounded=True)
+plt.show()
+
+# Predict with the trained model
+Y_pred = dtree.predict(X_test)
+
+# Calculate accuracy on the test set
+accuracy = accuracy_score(Y_test, Y_pred)
+print(f"Accuracy on the test set: {accuracy:.2%}")
