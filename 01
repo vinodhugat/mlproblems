@@ -1,32 +1,34 @@
 import pandas as pd
 import numpy as np
 
+# Load the dataset
 data = pd.read_csv('EnjoysSport.csv')
 data.head()
 
-data1=(data.dropna(axis=1,how="all")).dropna(axis=0,how="all")
+# Data preprocessing: Remove rows and columns with all missing values (NaN)
+data1 = (data.dropna(axis=1, how="all")).dropna(axis=0, how="all")
 data1.head()
 
-#making an array of all the attributes
+# Extract features (instances) and the target variable
 instances = np.array(data1)[:,:-1]
-
-#segrigate the target +ve and -ve
 target = np.array(data1)[:,-1]
-print(target)
 
-#s algorithm
-def train(c,t):
-for i,val in enumerate(t):
-if val == "yes":
-yes_find=c[i].copy()
-break
+# Find-S algorithm implementation
+def train(c, t):
+    for i, val in enumerate(t):
+        if val == "yes":
+            yes_find = c[i].copy()
+            break
  
-for i,val in enumerate(c):
-if t[i] == "yes":
-for x in range(len(yes_find)):
-if val[x] != yes_find[x]:
-yes_find[x]='?'
-else:
-pass
- 
-return yes_find
+    for i, val in enumerate(c):
+        if t[i] == "yes":
+            for x in range(len(yes_find)):
+                if val[x] != yes_find[x]:
+                    yes_find[x] = '?'
+                else:
+                    pass
+    return yes_find
+
+# Print the final hypothesis learned by the Find-S algorithm
+print("\nThe final hypothesis is:", train(instances, target))
+
