@@ -1,1 +1,32 @@
-this code coming  soon
+import pandas as pd
+import numpy as np
+
+data = pd.read_csv('EnjoysSport.csv')
+data.head()
+
+data1=(data.dropna(axis=1,how="all")).dropna(axis=0,how="all")
+data1.head()
+
+#making an array of all the attributes
+instances = np.array(data1)[:,:-1]
+
+#segrigate the target +ve and -ve
+target = np.array(data1)[:,-1]
+print(target)
+
+#s algorithm
+def train(c,t):
+for i,val in enumerate(t):
+if val == "yes":
+yes_find=c[i].copy()
+break
+ 
+for i,val in enumerate(c):
+if t[i] == "yes":
+for x in range(len(yes_find)):
+if val[x] != yes_find[x]:
+yes_find[x]='?'
+else:
+pass
+ 
+return yes_find
