@@ -1,0 +1,66 @@
+# new SVM
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import svm
+
+# Modified input data with two columns (X1, X2)
+X = np.array([
+    [2, 1],
+    [1, -1],
+    [2, -1],
+    [4, 0],
+    [5, 1],
+    [5, -1],
+    [6, 0]
+])
+
+# Modified labels (first 4 classes are negative, remaining 4 are positive)
+labels = np.array([-1, -1, -1, -1, 1, 1, 1])
+
+# Create SVM model
+clf = svm.SVC(kernel='linear')  # Creating a linear Support Vector Machine (SVM) model
+
+# Train the model
+clf.fit(X, labels)  # Training the SVM model with the provided features and labels
+
+
+
+
+# Print the learned coefficients (weights) and intercept (bias)
+print("Coefficients:", clf.coef_)      # Coefficients represent the weights of the features
+print("Intercept:", clf.intercept_)     # Intercept represents the bias term
+
+# Plot the data points
+plt.scatter(X[:, 0], X[:, 1], c=labels, cmap=plt.cm.Paired)
+# Scatter plot of data points where colors represent different class labels
+
+# Plot the hyperplane
+ax = plt.gca()
+xlim = ax.get_xlim()
+ylim = ax.get_ylim()
+
+# Create grid to evaluate model
+xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 50),
+                     np.linspace(ylim[0], ylim[1], 50))  # Creating a grid of points for evaluation
+
+# Use the decision function to get the values for the decision boundary
+Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plot decision boundary and margins
+plt.contour(xx, yy, Z, colors='k', levels=[-1, 0, 1], alpha=0.5,
+            linestyles=['--', '-', '--'])
+# Plotting decision boundary and margins based on the decision function values
+
+# Plot support vectors
+plt.scatter(clf.support_vectors_[:, 0], clf.support_vectors_[:, 1], s=100,
+            facecolors='none', edgecolors='k')
+# Highlighting the support vectors with larger markers
+
+# Set plot title and labels
+plt.title('SVM with Hyperplane')
+plt.xlabel('X1')
+plt.ylabel('X2')
+
+# Display the plot
+plt.show()
